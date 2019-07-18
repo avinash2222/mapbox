@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Change a map's style</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+		
+    </style>
+</head>
+<body>
+<!___________________ for direction_______________________>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.0/mapbox-gl-directions.css' type='text/css' />
+<div id='map'></div>
+<!___________________________________________________________>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.1/mapbox-gl-geocoder.min.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.1/mapbox-gl-geocoder.css' type='text/css' />
+<div id='map'></div>
+
+<style>
+    #menu {
+        position: absolute;
+        background: #fff;
+        padding: 10px;
+        font-family: 'Open Sans', sans-serif;
+    }
+</style>
+
+
+
+<style>
+.geocoder {
+position:absolute;
+z-index:1;
+width:50%;
+left:50%;
+margin-left:-25%;
+top:20px;
+}
+.mapboxgl-ctrl-geocoder { min-width:100%; }
+</style>
+<div id='map'></div>
+<div id='geocoder' class='geocoder'></div>
+
+
+
+<!---------------Menu for adding layer------------------------------->
+<div id='map'></div>
+<div id='menu'>
+    <input id='streets-v11' type='radio' name='rtoggle' value='streets' checked='checked'>
+    <label for='streets'>streets</label>
+    <input id='light-v10' type='radio' name='rtoggle' value='light'>
+    <label for='light'>light</label>
+    <input id='dark-v10' type='radio' name='rtoggle' value='dark'>
+    <label for='dark'>dark</label>
+    <input id='outdoors-v11' type='radio' name='rtoggle' value='outdoors'>
+    <label for='outdoors'>outdoors</label>
+    <input id='satellite-v9' type='radio' name='rtoggle' value='satellite'>
+    <label for='satellite'>satellite</label>
+</div>
+<!------------------------------------------------------------->
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiYXZpbmFzaDIyMjIiLCJhIjoiY2p5NzRkZml1MG5nMjNkbWx3YTF3YTVsYSJ9.6CMzFOGFqFSDaHBN2MHE-g';
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    zoom: 13,
+    center: [4.899, 52.372]
+});
+<!-------------------------------- adding zoom in zoom out -------------------------->
+map.addControl(new mapboxgl.NavigationControl());
+<!------------------------------------------------------------------------------------>
+<!-------------------------------for current location--------------------------------------->
+map.addControl(new mapboxgl.GeolocateControl({
+positionOptions: {
+enableHighAccuracy: true
+},
+trackUserLocation: true
+}));
+<!------------------------------------------------------------------------------------>
+<!-------------------for changing layer---------------------------------->
+var layerList = document.getElementById('menu');
+var inputs = layerList.getElementsByTagName('input');
+
+function switchLayer(layer) {
+    var layerId = layer.target.id;
+    map.setStyle('mapbox://styles/mapbox/' + layerId);
+}
+
+for (var i = 0; i < inputs.length; i++) {
+    inputs[i].onclick = switchLayer;
+}
+<!------------------------------------------------------------->
+
+<!-------for direction ------------------------------------->
+map.addControl(new MapboxDirections({
+accessToken: mapboxgl.accessToken}),'bottom-left');
+<!------------------------------------------------------------->
+
+<!----------------for searching------------------------------->
+var geocoder = new MapboxGeocoder({
+accessToken: mapboxgl.accessToken,
+mapboxgl: mapboxgl
+});
+ 
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+<!------------------------------------------------------------->
+</script>
+
+</body>
+</html>
